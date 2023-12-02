@@ -1,10 +1,10 @@
-# Advent of Code 2022
+# Advent of Code 2023
 
-https://adventofcode.com/2022
+https://adventofcode.com/2023
 
 Days will have implementations in Rust, Python, or both depending how much time
-I had that day. The goal is to play around and see just how painful (or not) it
-is to prototype in Rust vs Python on smaller apps like this.
+I had that day. The goal is to get quicker at prototyping in Rust for small
+command line applications like this.
 
 ## Add a new challenge folder
 ```
@@ -19,8 +19,8 @@ This command communicates with the Advent of Code servers to fetch this data.
 The download also requires your session cookie to fetch your personalized data.
 
 This cookie is fairly long lived and can be extracted from the `Cookie` header
-for any request to adventofcode.com. The set the `COOKIE` environment variable
-with this session value
+for any request to adventofcode.com after you are logged in. The set the
+`COOKIE` environment variable with this session value
 
 Requirements:
 * [just](https://github.com/casey/just)
@@ -29,16 +29,10 @@ Requirements:
 * GNU sed
 * pandoc
 
-## Run the Rust code
+## Run the Rust code (day 5, part 1)
 ```
 cd day05
 cargo run --bin d5p1 -- [arg] ...
-```
-
-## Run the Python code
-```
-cd day05
-python part1.py
 ```
 
 ## Requirements
