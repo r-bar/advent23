@@ -18,11 +18,12 @@ fn main() -> anyhow::Result<()> {
 mod test {
     #[cfg(test)]
     mod tests {
+        #[allow(unused_imports)]
         use super::*;
 
         #[test]
         fn example_test() {
-            let example = include_str!("../../example.txt");
+            let _example = include_str!("../../example.txt");
         }
     }
 }
