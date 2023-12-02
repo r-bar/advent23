@@ -6,7 +6,7 @@ fn main() -> anyhow::Result<()> {
     let filename = std::env::args()
         .nth(1)
         .unwrap_or_else(|| "input.txt".to_string());
-    let f = File::open(&filename)?;
+    let f = File::open(filename)?;
     let reader = BufReader::new(f);
     for line in reader.lines() {
         println!("{}", line?.trim());
@@ -20,7 +20,7 @@ mod test {
     mod tests {
         use super::*;
 
-        fn #[test]
+        #[test]
         fn example_test() {
             let example = include_str!("../../example.txt");
         }
