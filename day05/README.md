@@ -188,3 +188,32 @@ seed number ` 82 ` , which corresponds to soil ` 84 ` , fertilizer
 Consider all of the initial seed numbers listed in the ranges on the
 first line of the almanac. *What is the lowest location number that
 corresponds to any of the initial seed numbers?*
+
+## Implementation Notes
+
+For part 2 I had concerns about performance since a little more than 2.5b seeds
+are run through the search graph. Each of my mappings was using a btree
+algorithm for lookup in a fairly memory dense layout. I used rayon to
+parallelize the lookups. This naive approach of using the same btree maps and
+parallelizing the computation with rayon results in a sub 5 second runtime. I
+made 2 versions because I was not sure if parallelizing the outer loop mattered.
+Turns out it does not.
+
+```
+$ hyperfine './target/release/d5p2 --version v1 day05/input.txt' './target/release/d5p2 --version v2 day05/input.txt'
+Benchmark 1: ./target/release/d5p2 --version v1 day05/input.txt
+  Time (mean ± σ):      4.522 s ±  0.037 s    [User: 140.997 s, System: 0.164 s]
+  Range (min … max):    4.443 s …  4.587 s    10 runs
+
+Benchmark 2: ./target/release/d5p2 --version v2 day05/input.txt
+  Time (mean ± σ):      4.515 s ±  0.005 s    [User: 141.063 s, System: 0.139 s]
+  Range (min … max):    4.509 s …  4.524 s    10 runs
+
+Summary
+  ./target/release/d5p2 --version v2 day05/input.txt ran
+    1.00 ± 0.01 times faster than ./target/release/d5p2 --version v1 day05/input.txt
+```
+
+Other potential avenues for optimization include:
+* transforming the maps into struct of arrays once fully loaded and sorted
+* stage the computation for each map to increase cache locality
