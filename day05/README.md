@@ -215,5 +215,6 @@ Summary
 ```
 
 Other potential avenues for optimization include:
+* Working with ranges through the maps instead of flattening
 * transforming the maps into struct of arrays once fully loaded and sorted
 * stage the computation for each map to increase cache locality
