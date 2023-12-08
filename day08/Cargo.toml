@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 lazy_static.workspace = true
+num = "0.4.1"
 regex.workspace = true

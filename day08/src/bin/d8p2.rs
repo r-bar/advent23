@@ -21,6 +21,5 @@ mod tests {
 
     #[test]
     fn example_test() {
-        let _example = include_str!("../../example.txt");
     }
 }
