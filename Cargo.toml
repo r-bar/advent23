@@ -32,3 +32,5 @@ members = [
 anyhow = "1"
 lazy_static = "1"
 regex = "1"
+log = "*"
+env_logger = "*"

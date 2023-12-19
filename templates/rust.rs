@@ -3,6 +3,7 @@ use std::io::prelude::*;
 use std::io::BufReader;
 
 fn main() -> anyhow::Result<()> {
+    env_logger::init();
     let filename = std::env::args()
         .nth(1)
         .unwrap_or_else(|| "input.txt".to_string());

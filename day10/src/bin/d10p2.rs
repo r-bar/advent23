@@ -22,14 +22,13 @@ fn edges(grid: &Grid) -> Vec<Point> {
 
 
 fn solve(grid: &Grid) -> anyhow::Result<usize> {
-    let _path: Vec<_> = grid.path(grid.start)
+    log::debug!("grid:\n{grid}\n");
+    let expanded = grid.expand();
+    log::debug!("expanded:\n{expanded}\n");
+    let path: HashSet<_> = expanded.path(expanded.start)
         .ok_or(anyhow::anyhow!("invalid path start"))?
         .collect();
-    let path: HashSet<_> = grid.path(grid.start)
-        .ok_or(anyhow::anyhow!("invalid path start"))?
-        .collect();
-    //todo!();
-    let mut to_check: VecDeque<_> = edges(grid).into_iter().collect();
+    let mut to_check: VecDeque<_> = edges(&expanded).into_iter().collect();
     let mut outside: HashSet<Point> = HashSet::new();
     while let Some(pt) = to_check.pop_front() {
         if path.contains(&pt) || outside.contains(&pt) {
@@ -37,18 +36,42 @@ fn solve(grid: &Grid) -> anyhow::Result<usize> {
         }
         outside.insert(pt);
         let neighbors = [
-            grid.rel_pt(pt, Direction::N),
-            grid.rel_pt(pt, Direction::S),
-            grid.rel_pt(pt, Direction::E),
-            grid.rel_pt(pt, Direction::W),
+            expanded.rel_pt(pt, Direction::N),
+            expanded.rel_pt(pt, Direction::S),
+            expanded.rel_pt(pt, Direction::E),
+            expanded.rel_pt(pt, Direction::W),
         ].into_iter().flatten();
         to_check.extend(neighbors);
     }
-    let size = grid.width() * grid.height();
-    //dbg!(size);
-    //dbg!(outside.len());
-    //dbg!(path.len());
-    Ok(size - outside.len() - path.len())
+    let mut shown = grid.clone();
+    let mut inside = 0;
+    for top_left_y in (0..grid.height()).map(|y| y * 3) {
+        for top_left_x in (0..grid.width()).map(|x| x * 3) {
+            #[allow(clippy::identity_op)]
+            let pts = [
+                Point { x: top_left_x + 0, y: top_left_y + 0 },
+                Point { x: top_left_x + 1, y: top_left_y + 0 },
+                Point { x: top_left_x + 2, y: top_left_y + 0 },
+                Point { x: top_left_x + 0, y: top_left_y + 1 },
+                Point { x: top_left_x + 1, y: top_left_y + 1 },
+                Point { x: top_left_x + 2, y: top_left_y + 1 },
+                Point { x: top_left_x + 0, y: top_left_y + 2 },
+                Point { x: top_left_x + 1, y: top_left_y + 2 },
+                Point { x: top_left_x + 2, y: top_left_y + 2 },
+            ];
+            let path_node = pts.iter().any(|p| path.contains(p));
+            let outside_node = pts.iter().any(|p| outside.contains(p));
+            if outside_node {
+                let ptr = shown.get_mut(top_left_x / 3, top_left_y / 3).unwrap();
+                *ptr = 'O';
+            } else if !path_node && !outside_node {
+                inside += 1;
+                *shown.get_mut(top_left_x / 3, top_left_y / 3).unwrap() = 'I';
+            }
+        }
+    }
+    log::debug!("solved:\n{shown}\n");
+    Ok(inside)
 }
 
 
@@ -61,10 +84,11 @@ fn main() -> anyhow::Result<()> {
     let mut buffer = String::new();
     reader.read_to_string(&mut buffer)?;
     let grid = Grid::from_str(&buffer)?;
-    let steps = solve(&grid)?;
-    println!("Steps: {steps}");
+    let inside = solve(&grid)?;
+    println!("Inside: {inside}");
     Ok(())
 }
+
 
 #[cfg(test)]
 mod tests {
