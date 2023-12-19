@@ -103,7 +103,7 @@ impl Map {
 
     ///
     /// n is the number of times to expand.
-    pub fn expand(&mut self, n: u32) {
+    pub fn expand(&mut self, n: usize) {
         let mut occupied_cols = BTreeSet::new();
         let mut occupied_rows = BTreeSet::new();
         for location in self.locations.iter() {
@@ -120,13 +120,13 @@ impl Map {
             let occupied_row_before = occupied_rows.partition_point(|row| row < &curr_y);
             let empty_col_before = curr_x - occupied_col_before;
             let empty_row_before = curr_y - occupied_row_before;
-            let new_x = empty_col_before * 2usize.pow(n) + occupied_col_before;
-            let new_y = empty_row_before * 2usize.pow(n) + occupied_row_before;
+            let new_x = empty_col_before * n + occupied_col_before;
+            let new_y = empty_row_before * n + occupied_row_before;
             *loc = (new_x, new_y);
             index.insert((new_x, new_y), i);
         }
-        self.height = (self.height - occupied_rows.len()) * 2usize.pow(n) + occupied_rows.len();
-        self.width = (self.width - occupied_cols.len()) * 2usize.pow(n) + occupied_cols.len();
+        self.height = (self.height - occupied_rows.len()) * n + occupied_rows.len();
+        self.width = (self.width - occupied_cols.len()) * n + occupied_cols.len();
         self.index = index;
     }
 }
@@ -174,7 +174,7 @@ mod tests {
         .parse()
         .unwrap();
         let mut expanded = example.clone();
-        expanded.expand(1);
+        expanded.expand(2);
         assert_eq!(expanded.width, expected.width);
         assert_eq!(expanded.height, expected.height);
         assert_eq!(expanded.locations, expected.locations);

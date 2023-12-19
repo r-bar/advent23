@@ -6,7 +6,7 @@ use itertools::Itertools;
 use day11::{Map, distance};
 
 fn solve(mut map: Map) -> usize {
-    map.expand(1);
+    map.expand(2);
     let locations: Vec<_> = map.iter_locations().copied().collect();
     let mut sum = 0;
     for pair in locations.into_iter().combinations(2) {
